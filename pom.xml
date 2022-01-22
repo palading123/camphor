@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.palading</groupId>
+    <artifactId>camphor</artifactId>
+    <packaging>pom</packaging>
+    <version>0.0.1</version>
+    <description>org.palading.clivia.config.api gateway with high performance, high elasticity, responsiveness and high expansion</description>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>palading_cr</id>
+            <name>palading</name>
+            <email>palading_cr@163.com</email>
+            <roles>
+                <role>author</role>
+            </roles>
+        </developer>
+    </developers>
+    <modules>
+        <module>camphor-api</module>
+        <module>camphor-core</module>
+        <module>camphor-spring-boot-starter</module>
+        <module>camphor-dynamic</module>
+        <module>camphor-example</module>
+    </modules>
+
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.groovy-all>2.3.10</version.groovy-all>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${version.groovy-all}</version>
+        </dependency>
+    </dependencies>
+
+</project>
