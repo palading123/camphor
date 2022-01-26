@@ -12,12 +12,7 @@
  */
 package org.palading.camphor.core;
 
-import org.palading.clivia.cache.api.CliviaCache;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.ApplicationContext;
+import org.palading.camphor.api.CamphorDynamicComplier;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -28,14 +23,14 @@ import java.util.List;
 
 /**
  * @author palading_cr
- * @title CliviaAbstractDynamicFileRegistrationLoader
- * @project clivia
+ * @title CamphorAbstractDynamicFileRegistrationLoader
+ * @project camphor
  */
-public abstract class CamphorAbstractDynamicFileRegistrationLoader implements CliviaDynamicFileLoad {
+public abstract class CamphorAbstractDynamicFileRegistrationLoader implements CamphorDynamicFileLoad {
 
-    public static CliviaDynamicFileComplier cliviaDynamicFileComplier;
+    public static CamphorDynamicComplier camphorDynamicComplier;
 
-    public static FilenameFilter cliviaDynamicFilter;
+    public static FilenameFilter camphorDynamicFilter;
 
     /**
      * load dynamic file
@@ -43,7 +38,7 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
      * @author palading_cr
      *
      */
-    protected abstract void loadCliviaDynamicFile(ApplicationContext applicationContext, CliviaCache cliviaCache, File file)
+    protected abstract void loadCamphorDynamicFile(File file)
         throws Exception;
 
     /**
@@ -52,7 +47,7 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
      * @author palading_cr
      *
      */
-    protected abstract Object getCliviaFileBySpring(ApplicationContext applicationContext, Class clazz) throws Exception;
+   // protected abstract Object getCamphorFileBySpring(Class clazz) throws Exception;
 
     /**
      * dynamic type
@@ -62,8 +57,8 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
      */
     protected abstract String getDynamicType();
 
-    protected abstract void loadCacheByFile(File codeFile, CliviaCache cliviaCache, String dynamicKey,
-        ApplicationContext applicationContext) throws Exception;
+    protected abstract void loadCacheByFile(File codeFile, String dynamicKey
+        ) throws Exception;
 
     /**
      * register bean
@@ -71,27 +66,27 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
      * @author palading_cr
      *
      */
-    protected void registerSpringBeanDefinition(String dynamicTypeName, ApplicationContext applicationContext, Class clazz) {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)applicationContext.getAutowireCapableBeanFactory();
-        BeanDefinition beanDefinitionFilter = null;
-        try {
-            beanDefinitionFilter = beanFactory.getBeanDefinition(dynamicTypeName + clazz.getName());
-        } catch (NoSuchBeanDefinitionException e) {
-        }
-        if (null != beanDefinitionFilter) {
-            beanFactory.destroySingleton(dynamicTypeName + clazz.getName());
-        }
-        beanFactory.registerBeanDefinition(dynamicTypeName + clazz.getName(), buildGenericBeanDefinition(clazz));
-    }
+//    protected void registerSpringBeanDefinition(String dynamicTypeName, ApplicationContext applicationContext, Class clazz) {
+//        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)applicationContext.getAutowireCapableBeanFactory();
+//        BeanDefinition beanDefinitionFilter = null;
+//        try {
+//            beanDefinitionFilter = beanFactory.getBeanDefinition(dynamicTypeName + clazz.getName());
+//        } catch (NoSuchBeanDefinitionException e) {
+//        }
+//        if (null != beanDefinitionFilter) {
+//            beanFactory.destroySingleton(dynamicTypeName + clazz.getName());
+//        }
+//        beanFactory.registerBeanDefinition(dynamicTypeName + clazz.getName(), buildGenericBeanDefinition(clazz));
+//    }
 
-    private GenericBeanDefinition buildGenericBeanDefinition(Class clazz) {
-        GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
-        beanDefinition.setBeanClass(clazz);
-        beanDefinition.setScope("singleton");
-        beanDefinition.setLazyInit(false);
-        beanDefinition.setAutowireCandidate(true);
-        return beanDefinition;
-    }
+//    private GenericBeanDefinition buildGenericBeanDefinition(Class clazz) {
+//        GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
+//        beanDefinition.setBeanClass(clazz);
+//        beanDefinition.setScope("singleton");
+//        beanDefinition.setLazyInit(false);
+//        beanDefinition.setAutowireCandidate(true);
+//        return beanDefinition;
+//    }
 
     /**
      * load dynamic files
@@ -99,20 +94,20 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
      * @author palading_cr
      *
      */
-    public void loadDynamicFiles(FilenameFilter filenameFilter, ApplicationContext applicationContext, CliviaCache cache,
+    public void loadDynamicFiles(FilenameFilter filenameFilter,
         String... directories) throws Exception {
-        List<File> aFiles = getCliviaDynamicFiles(filenameFilter, directories);
-        loadDynamicFiles(applicationContext, cache, aFiles);
+        List<File> aFiles = getCamphorDynamicFiles(filenameFilter, directories);
+        loadDynamicFiles(aFiles);
     }
 
     /**
      * @author palading_cr
      *
      */
-    private void loadDynamicFiles(ApplicationContext applicationContext, CliviaCache cliviaCache, List<File> cliviaDynamicFiles)
+    private void loadDynamicFiles(List<File> camphorDynamicFiles)
         throws Exception {
-        for (File dynamicFile : cliviaDynamicFiles) {
-            loadCliviaDynamicFile(applicationContext, cliviaCache, dynamicFile);
+        for (File dynamicFile : camphorDynamicFiles) {
+            loadCamphorDynamicFile(dynamicFile);
         }
     }
 
@@ -123,7 +118,7 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
     private File getDirectory(String sPath) {
         File directory = new File(sPath);
         if (!directory.isDirectory()) {
-            URL resource = org.palading.clivia.dynamic.CliviaAbstractDynamicFileRunner.CliviaDynamicFileLoader.class.getClassLoader().getResource(sPath);
+            URL resource = CamphorAbstractDynamicFileRunner.CamphorDynamicFileLoader.class.getClassLoader().getResource(sPath);
             try {
                 directory = new File(resource.toURI());
             } catch (Exception e) {
@@ -139,26 +134,26 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Cl
      * @author palading_cr
      *
      */
-    private List<File> getCliviaDynamicFiles(FilenameFilter filenameFilter, String... aDirectories) {
-        List<File> cliviaDynamicFile = new ArrayList<File>();
+    private List<File> getCamphorDynamicFiles(FilenameFilter filenameFilter, String... aDirectories) {
+        List<File> camphorDynamicFile = new ArrayList<File>();
         for (String sDirectory : aDirectories) {
             if (sDirectory != null) {
                 File directory = getDirectory(sDirectory);
 
                 File[] aFiles = null != filenameFilter ? directory.listFiles(filenameFilter) : directory.listFiles();
                 if (aFiles != null && aFiles.length > 0) {
-                    cliviaDynamicFile.addAll(Arrays.asList(aFiles));
+                    camphorDynamicFile.addAll(Arrays.asList(aFiles));
                 }
             }
         }
-        return cliviaDynamicFile;
+        return camphorDynamicFile;
     }
 
     public <T extends FilenameFilter> void setFilenameFilter(T t) {
-        cliviaDynamicFilter = t;
+        camphorDynamicFilter = t;
     }
 
-    public <T extends CliviaDynamicFileComplier> void setCliviaDynamicFileComplier(T t) {
-        cliviaDynamicFileComplier = t;
+    public <T extends CamphorDynamicComplier> void setCamphorDynamicFileComplier(T t) {
+        camphorDynamicComplier = (CamphorDynamicComplier) t;
     }
 }

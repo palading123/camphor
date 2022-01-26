@@ -8,7 +8,7 @@
     <artifactId>camphor</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1</version>
-    <description>org.palading.clivia.config.api gateway with high performance, high elasticity, responsiveness and high expansion</description>
+    <description>org.palading.camphor.config.api gateway with high performance, high elasticity, responsiveness and high expansion</description>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -32,6 +32,7 @@
         <module>camphor-spring-boot-starter</module>
         <module>camphor-dynamic</module>
         <module>camphor-example</module>
+        <module>camphor-common</module>
     </modules>
 
 
@@ -41,14 +42,20 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.groovy-all>2.3.10</version.groovy-all>
+        <version.commons-lang3>3.10</version.commons-lang3>
     </properties>
-
+    <dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>${version.groovy-all}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${version.commons-lang3}</version>
+    </dependency>
     </dependencies>
-
+    </dependencyManagement>
 </project>

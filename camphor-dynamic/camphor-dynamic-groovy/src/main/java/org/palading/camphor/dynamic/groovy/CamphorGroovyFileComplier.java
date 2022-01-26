@@ -10,39 +10,27 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.palading.camphor.core;
+package org.palading.camphor.dynamic.groovy;
+import groovy.lang.GroovyClassLoader;
+import org.palading.camphor.api.CamphorDynamicComplier;
+
+import java.io.File;
 
 /**
  * @author palading_cr
- * @title CamphorDynamicFilterRunner
+ * @title CamphorGroovyFilterComplier
  * @project camphor
+ *
  */
-public class CamphorDynamicFilterLoaderRunner extends CamphorAbstractDynamicFileRunner {
-
-    private static CamphorDynamicFilterLoaderRunner camphorDynamicFilterLoaderRunner = new CamphorDynamicFilterLoaderRunner();
-
-    private CamphorDynamicFilterLoaderRunner() {};
-
-    public static CamphorDynamicFilterLoaderRunner getCamphorDynamicFilterLoaderRunner() {
-        return camphorDynamicFilterLoaderRunner;
-    }
+public class CamphorGroovyFileComplier implements CamphorDynamicComplier {
 
     /**
-     * get dynamic filter path
-     *
-     * @author palading_cr
-     *
-     */
-
-
-    /**
-     * return camphorDynamicFilterRegistrationLoader instance
-     *
      * @author palading_cr
      *
      */
     @Override
-    protected CamphorDynamicFileLoad getCamphorDynamicFileLoad() {
-        return CamphorDynamicRegistrationLoader.getCamphorFilterFileRegistrationLoader();
+    public Class compile(File file) throws Exception {
+        GroovyClassLoader loader = CamphorGroovyClassLoader.getCamphorGroovyClassLoader().getClassLoader(GroovyClassLoader.class);
+        return loader.parseClass(file);
     }
 }

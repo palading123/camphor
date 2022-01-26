@@ -9,21 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>camphor-core</artifactId>
+    <artifactId>camphor-common</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.palading</groupId>
-            <artifactId>camphor-dynamic-groovy</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-    </dependencies>
+
 </project>

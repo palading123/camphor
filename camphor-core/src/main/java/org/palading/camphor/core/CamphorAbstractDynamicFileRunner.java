@@ -13,27 +13,24 @@
 package org.palading.camphor.core;
 
 import org.apache.commons.lang3.StringUtils;
-import org.palading.clivia.cache.api.CliviaCache;
-import org.palading.clivia.common.api.CliviaServerProperties;
-import org.palading.clivia.spi.CliviaExtendClassLoader;
-import org.springframework.context.ApplicationContext;
-
+import org.palading.camphor.api.CamphorDynamicComplier;
+import org.palading.camphor.api.CamphorDynamicFileRunner;
+import org.palading.camphor.dynamic.groovy.CamphorGroovyCheckFilter;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Optional;
 
 /**
  * @author palading_cr
- * @title CliviaAbstractDynamicFileRunner
- * @project clivia
+ * @title CamphorAbstractDynamicFileRunner
+ * @project camphor
  */
-public abstract class CamphorAbstractDynamicFileRunner implements CliviaDynamicFileRunner {
+public abstract class CamphorAbstractDynamicFileRunner implements CamphorDynamicFileRunner {
 
-    protected abstract String getDynamicFilePath(CliviaServerProperties cliviaServerProperties);
 
-    // protected abstract void dynamicFileLoad(CliviaServerProperties cliviaServerProperties, ApplicationContext
+    // protected abstract void dynamicFileLoad(CamphorServerProperties camphorServerProperties, ApplicationContext
     // applicationContext,
-    // CliviaCache cliviaCache, String dynamicPath) throws Exception;
+    // CamphorCache camphorCache, String dynamicPath) throws Exception;
     //
     /**
      * load the dynamic filters
@@ -41,30 +38,29 @@ public abstract class CamphorAbstractDynamicFileRunner implements CliviaDynamicF
      * @author palading_cr
      *
      */
-    protected void dynamicFileLoad(CliviaServerProperties cliviaServerProperties, ApplicationContext applicationContext,
-                                   CliviaCache cliviaCache, String dynamicPath) throws Exception {
-        loadDyanmic(cliviaServerProperties, applicationContext, cliviaCache, dynamicPath, getCliviaDynamicFileLoad());
+    protected void dynamicFileLoad(String dynamicFilePath,String dynamicFileType) throws Exception {
+        loadDyanmic(dynamicFilePath, dynamicFileType, getCamphorDynamicFileLoad());
     }
 
-    protected abstract CliviaDynamicFileLoad getCliviaDynamicFileLoad();
+    protected abstract CamphorDynamicFileLoad getCamphorDynamicFileLoad();
 
     /**
      * check file path
      *
      * @author palading_cr /3
      */
-    private void cliviaDynamicFileCheck(String dynamicFilePath) throws Exception {
+    private void camphorDynamicFileCheck(String dynamicFilePath) throws Exception {
         Optional
             .of(dynamicFilePath)
             .filter(StringUtils::isNotEmpty)
             .orElseThrow(
-                () -> new Exception("CliviaAbstractDynamicFileRunner[cliviaDynamicFileCheck] path[" + dynamicFilePath
+                () -> new Exception("CamphorAbstractDynamicFileRunner[camphorDynamicFileCheck] path[" + dynamicFilePath
                     + "] not exists"));
         Optional
             .of(new File(dynamicFilePath.split(",")[0]))
             .filter(File::isDirectory)
             .orElseThrow(
-                () -> new Exception("CliviaAbstractDynamicFileRunner[cliviaDynamicFileCheck]dynamicFilePath is not file path"));
+                () -> new Exception("CamphorAbstractDynamicFileRunner[camphorDynamicFileCheck]dynamicFilePath is not file path"));
     }
 
     /**
@@ -73,12 +69,10 @@ public abstract class CamphorAbstractDynamicFileRunner implements CliviaDynamicF
      * @author palading_cr
      *
      */
-    protected void loadDyanmic(CliviaServerProperties cliviaServerProperties, ApplicationContext applicationContext,
-        CliviaCache cliviaCache, String dynamicPath, CliviaDynamicFileLoad cliviaDynamicFileLoad) throws Exception {
-        CliviaDynamicFileFactory cliviaDynamicFileFactory = new CliviaDynamicFileFactory(cliviaServerProperties);
-        CliviaDynamicFileLoader cliviaDynamicFileLoader = new CliviaDynamicFileLoader(cliviaDynamicFileLoad);
-        cliviaDynamicFileLoader.registerScheduledDynamicFileManager(cliviaDynamicFileFactory, applicationContext, cliviaCache,
-            dynamicPath);
+    protected void loadDyanmic(String dynamicFilePath, String dynamicFileType,CamphorDynamicFileLoad camphorDynamicFileLoad) throws Exception {
+        CamphorDynamicFileFactory camphorDynamicFileFactory = new CamphorDynamicFileFactory(dynamicFileType);
+        CamphorDynamicFileLoader camphorDynamicFileLoader = new CamphorDynamicFileLoader(camphorDynamicFileLoad);
+        camphorDynamicFileLoader.registerScheduledDynamicFileManager(camphorDynamicFileFactory,dynamicFilePath);
     }
 
     /**
@@ -86,60 +80,58 @@ public abstract class CamphorAbstractDynamicFileRunner implements CliviaDynamicF
      *
      */
     @Override
-    public <T> void loadDynamicFile(T t, CliviaServerProperties cliviaServerProperties, ApplicationContext applicationContext)
+    public void loadDynamicFile(String dynamicFilePath,String dynamicFileType)
         throws Exception {
         try {
-            CliviaCache cliviaCache = (CliviaCache)t;
-            String dynamicPath = getDynamicFilePath(cliviaServerProperties);
-            cliviaDynamicFileCheck(dynamicPath);
-            dynamicFileLoad(cliviaServerProperties, applicationContext, cliviaCache, dynamicPath);
+            camphorDynamicFileCheck(dynamicFilePath);
+            dynamicFileLoad(dynamicFilePath,dynamicFileType);
         } catch (Exception e) {
             throw e;
         }
     }
 
-    class CliviaDynamicFileLoader {
+    class CamphorDynamicFileLoader {
 
-        private CliviaDynamicFileLoad cliviaDynamicFileLoad;
+        private CamphorDynamicFileLoad camphorDynamicFileLoad;
 
-        public CliviaDynamicFileLoader(CliviaDynamicFileLoad cliviaDynamicFileLoad) {
-            this.cliviaDynamicFileLoad = cliviaDynamicFileLoad;
+        public CamphorDynamicFileLoader(CamphorDynamicFileLoad camphorDynamicFileLoad) {
+            this.camphorDynamicFileLoad = camphorDynamicFileLoad;
         }
 
-        public <T> void registerScheduledDynamicFileManager(CliviaDynamicFileFactory cliviaDynamicFileFactory, T t,
-            CliviaCache cliviaCache, String... directories) throws Exception {
-            cliviaDynamicFileLoad.setFilenameFilter(cliviaDynamicFileFactory.getFilenameFilter());
-            cliviaDynamicFileLoad.setCliviaDynamicFileComplier(cliviaDynamicFileFactory.getCliviaDynamicFileComplier());
-            cliviaDynamicFileLoad.registerScheduledDynamicFileManager(t, cliviaCache, directories);
+        public <T> void registerScheduledDynamicFileManager(CamphorDynamicFileFactory camphorDynamicFileFactory,
+             String... directories) throws Exception {
+            camphorDynamicFileLoad.setFilenameFilter(camphorDynamicFileFactory.getFilenameFilter());
+            camphorDynamicFileLoad.setCamphorDynamicFileComplier(camphorDynamicFileFactory.getCamphorDynamicFileComplier());
+            camphorDynamicFileLoad.registerScheduledDynamicFileManager(directories);
         }
 
     }
 
-    class CliviaDynamicFileFactory {
-        private static final String cliviaGroovyFilterType = "groovy";
+    class CamphorDynamicFileFactory {
+        private static final String camphorGroovyFilterType = "groovy";
         private FilenameFilter filenameFilter;
-        private CliviaDynamicFileComplier cliviaDynamicFileComplier;
+        private CamphorDynamicComplier camphorDynamicComplier;
 
-        public CliviaDynamicFileFactory(CliviaServerProperties cliviaServerProperties) {
-            String cliviaDynamicFileType =
-                Optional.ofNullable(cliviaServerProperties.getDynamicFileType()).orElse(cliviaGroovyFilterType);
-            if (cliviaDynamicFileType.equals(cliviaGroovyFilterType)) {
-                this.filenameFilter = new CliviaGroovyCheckFilter();
+        public CamphorDynamicFileFactory(String dynamicFileType) {
+            String camphorDynamicFileType =
+                Optional.ofNullable(dynamicFileType).orElse(camphorGroovyFilterType);
+            if (camphorDynamicFileType.equals(camphorGroovyFilterType)) {
+                this.filenameFilter = new CamphorGroovyCheckFilter();
             }
-            this.cliviaDynamicFileComplier = getCliviaDynamicFileComplier(cliviaDynamicFileType);
+            this.camphorDynamicComplier = getCamphorDynamicFileComplier(camphorDynamicFileType);
         }
 
-        private CliviaDynamicFileComplier getCliviaDynamicFileComplier(String cliviaDynamicFileType) {
-            return CliviaExtendClassLoader.getCliviaExtendClassLoaderInstance().getExtendClassInstance(
-                CliviaDynamicFileComplier.class, cliviaDynamicFileType);
+        private CamphorDynamicComplier getCamphorDynamicFileComplier(String camphorDynamicFileType) {
+            return CamphorExtendClassLoader.getCamphorExtendClassLoaderInstance().getExtendClassInstance(
+                CamphorDynamicComplier.class, camphorDynamicFileType);
         }
 
         public FilenameFilter getFilenameFilter() {
             return filenameFilter;
         }
 
-        public CliviaDynamicFileComplier getCliviaDynamicFileComplier() {
-            return cliviaDynamicFileComplier;
+        public CamphorDynamicComplier getCamphorDynamicFileComplier() {
+            return camphorDynamicComplier;
         }
     }
 

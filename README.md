@@ -6,8 +6,8 @@
   <strong>camphor_0.0.1</strong>
 </p>
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/palading123/clivia/blob/main/LICENSE)
-[![Travis](https://app.travis-ci.com/palading123/clivia.svg?branch=main)](https://app.travis-ci.com/github/palading123/clivia)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/palading123/camphor/blob/main/LICENSE)
+[![Travis](https://app.travis-ci.com/palading123/camphor.svg?branch=main)](https://app.travis-ci.com/github/palading123/camphor)
 <img src="https://img.shields.io/badge/JDK-8+-green" />
 <img src="https://img.shields.io/badge/Latest Release-0.0.1-orange" />
 <img src="https://img.shields.io/badge/Maven- 3.8.3-green" />

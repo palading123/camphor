@@ -10,39 +10,21 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.palading.camphor.core;
+package org.palading.camphor.dynamic.groovy;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * @author palading_cr
- * @title CamphorDynamicFilterRunner
+ * @title CamphorGroovyFilter
  * @project camphor
+ *
  */
-public class CamphorDynamicFilterLoaderRunner extends CamphorAbstractDynamicFileRunner {
+public class CamphorGroovyCheckFilter implements FilenameFilter {
 
-    private static CamphorDynamicFilterLoaderRunner camphorDynamicFilterLoaderRunner = new CamphorDynamicFilterLoaderRunner();
-
-    private CamphorDynamicFilterLoaderRunner() {};
-
-    public static CamphorDynamicFilterLoaderRunner getCamphorDynamicFilterLoaderRunner() {
-        return camphorDynamicFilterLoaderRunner;
-    }
-
-    /**
-     * get dynamic filter path
-     *
-     * @author palading_cr
-     *
-     */
-
-
-    /**
-     * return camphorDynamicFilterRegistrationLoader instance
-     *
-     * @author palading_cr
-     *
-     */
     @Override
-    protected CamphorDynamicFileLoad getCamphorDynamicFileLoad() {
-        return CamphorDynamicRegistrationLoader.getCamphorFilterFileRegistrationLoader();
+    public boolean accept(File dir, String name) {
+        return dir.exists() && name.endsWith(".groovy");
     }
 }
