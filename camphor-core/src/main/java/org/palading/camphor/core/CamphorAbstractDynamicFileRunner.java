@@ -15,7 +15,9 @@ package org.palading.camphor.core;
 import org.apache.commons.lang3.StringUtils;
 import org.palading.camphor.api.CamphorDynamicComplier;
 import org.palading.camphor.api.CamphorDynamicFileRunner;
+import org.palading.camphor.common.spi.CamphorExtendClassLoader;
 import org.palading.camphor.dynamic.groovy.CamphorGroovyCheckFilter;
+import org.palading.camphor.common.spi.CamphorExtendClassLoader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Optional;
@@ -23,7 +25,7 @@ import java.util.Optional;
 /**
  * @author palading_cr
  * @title CamphorAbstractDynamicFileRunner
- * @project camphor
+ * @project camphor-core
  */
 public abstract class CamphorAbstractDynamicFileRunner implements CamphorDynamicFileRunner {
 
@@ -72,7 +74,7 @@ public abstract class CamphorAbstractDynamicFileRunner implements CamphorDynamic
     protected void loadDyanmic(String dynamicFilePath, String dynamicFileType,CamphorDynamicFileLoad camphorDynamicFileLoad) throws Exception {
         CamphorDynamicFileFactory camphorDynamicFileFactory = new CamphorDynamicFileFactory(dynamicFileType);
         CamphorDynamicFileLoader camphorDynamicFileLoader = new CamphorDynamicFileLoader(camphorDynamicFileLoad);
-        camphorDynamicFileLoader.registerScheduledDynamicFileManager(camphorDynamicFileFactory,dynamicFilePath);
+        camphorDynamicFileLoader.registerDynamicFileManager(camphorDynamicFileFactory,dynamicFilePath);
     }
 
     /**
@@ -98,11 +100,11 @@ public abstract class CamphorAbstractDynamicFileRunner implements CamphorDynamic
             this.camphorDynamicFileLoad = camphorDynamicFileLoad;
         }
 
-        public <T> void registerScheduledDynamicFileManager(CamphorDynamicFileFactory camphorDynamicFileFactory,
+        public <T> void registerDynamicFileManager(CamphorDynamicFileFactory camphorDynamicFileFactory,
              String... directories) throws Exception {
             camphorDynamicFileLoad.setFilenameFilter(camphorDynamicFileFactory.getFilenameFilter());
             camphorDynamicFileLoad.setCamphorDynamicFileComplier(camphorDynamicFileFactory.getCamphorDynamicFileComplier());
-            camphorDynamicFileLoad.registerScheduledDynamicFileManager(directories);
+            camphorDynamicFileLoad.registerDynamicFileManager(directories);
         }
 
     }

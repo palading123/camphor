@@ -18,13 +18,13 @@ import java.io.FilenameFilter;
 
 /**
  * @author palading_cr
- * @title CliviaGroovyFileLoadRegister
- * @project clivia
+ * @title CamphorGroovyFileLoadRegister
+ * @project camphor
  *
  */
 public interface CamphorDynamicFileLoad {
 
-    public void registerScheduledDynamicFileManager(String... directories) throws Exception;
+    public void registerDynamicFileManager(String... directories) throws Exception;
 
     public <T extends FilenameFilter> void setFilenameFilter(T t);
 

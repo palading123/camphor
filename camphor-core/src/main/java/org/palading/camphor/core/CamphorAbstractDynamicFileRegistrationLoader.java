@@ -57,7 +57,7 @@ public abstract class CamphorAbstractDynamicFileRegistrationLoader implements Ca
      */
     protected abstract String getDynamicType();
 
-    protected abstract void loadCacheByFile(File codeFile, String dynamicKey
+    protected abstract void loadDynamicFile(File codeFile, String dynamicKey
         ) throws Exception;
 
     /**

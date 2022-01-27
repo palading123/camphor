@@ -22,8 +22,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.palading</groupId>
+            <artifactId>camphor-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

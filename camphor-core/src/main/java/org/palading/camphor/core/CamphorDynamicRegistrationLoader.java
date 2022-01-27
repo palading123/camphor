@@ -45,7 +45,7 @@ public class CamphorDynamicRegistrationLoader extends CamphorAbstractDynamicFile
      *
      */
     @Override
-    public  void registerScheduledDynamicFileManager(String... directories) throws Exception {
+    public  void registerDynamicFileManager(String... directories) throws Exception {
         loadDynamicFiles(camphorDynamicFilter,directories);
     }
 
@@ -56,7 +56,7 @@ public class CamphorDynamicRegistrationLoader extends CamphorAbstractDynamicFile
      *
      */
     @Override
-    protected void loadCacheByFile(File codeFile, String dynamicKey) throws Exception {
+    protected void loadDynamicFile(File codeFile, String dynamicKey) throws Exception {
         Class<?> clazz = camphorDynamicComplier.compile(codeFile);
         if (!Modifier.isAbstract(clazz.getModifiers())) {
                 camphorfilterClassLastModified.putIfAbsent(dynamicKey, codeFile.lastModified());
@@ -79,7 +79,7 @@ public class CamphorDynamicRegistrationLoader extends CamphorAbstractDynamicFile
                     camphorfilterClassLastModified.remove(camphorHasDynamicFilterKey);
                 }
                 if (null == camphorfilterClassLastModified.get(camphorHasDynamicFilterKey)) {
-                    loadCacheByFile(file, camphorHasDynamicFilterKey);
+                    loadDynamicFile(file, camphorHasDynamicFilterKey);
                 }
             } catch (Exception e) {
                 throw e;
